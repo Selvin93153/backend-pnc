@@ -40,14 +40,14 @@ async create(dto: CreateUsuarioDto): Promise<Usuario> {
     return this.usuarioRepository.find({ relations: ['rol'] });
   }
 
-  async findOne(id: number): Promise<Usuario> {
-    const usuario = await this.usuarioRepository.findOne({ where: { id }, relations: ['rol'] });
+  async findOne(id_usuario: number): Promise<Usuario> {
+    const usuario = await this.usuarioRepository.findOne({ where: { id_usuario }, relations: ['rol'] });
     if (!usuario) throw new NotFoundException('Usuario no encontrado');
     return usuario;
   }
 
-async update(id: number, dto: UpdateUsuarioDto): Promise<Usuario> {
-  const usuario = await this.findOne(id);
+async update(id_usuario: number, dto: UpdateUsuarioDto): Promise<Usuario> {
+  const usuario = await this.findOne(id_usuario);
 
   if (dto.id_rol) {
     const rol = await this.roleRepository.findOneBy({ id_rol: dto.id_rol });
@@ -65,7 +65,6 @@ async update(id: number, dto: UpdateUsuarioDto): Promise<Usuario> {
   Object.assign(usuario, dto);
   return this.usuarioRepository.save(usuario);
 }
-
 
   async remove(id: number): Promise<void> {
     const usuario = await this.findOne(id);

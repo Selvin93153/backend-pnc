@@ -4,13 +4,15 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { Role } from '../../roles/entities/role.entity';
+import { Reporte } from 'src/reportes/entities/reporte.entity';
 
 @Entity('usuarios')
 export class Usuario {
   @PrimaryGeneratedColumn({ name: 'id_usuario' })
-  id: number;
+  id_usuario: number;
 
   @Column({ length: 100 })
   nombres: string;
@@ -30,4 +32,7 @@ export class Usuario {
   @ManyToOne(() => Role)
   @JoinColumn({ name: 'id_rol' })
   rol: Role;
+
+  @OneToMany(() => Reporte, reporte => reporte.id_usuario)
+reportes: Reporte[];
 }
