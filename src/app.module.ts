@@ -5,6 +5,7 @@ import { RolesModule } from './roles/roles.module';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { ReportesModule } from './reportes/reportes.module';
 import { TiposEquiposModule } from './tipos-equipos/tipos-equipos.module';
+import { EquiposAsignadosModule } from './equipos_asignados/equipos-asignados.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { TiposEquiposModule } from './tipos-equipos/tipos-equipos.module';
     UsuariosModule,
     ReportesModule,
     TiposEquiposModule,
+    EquiposAsignadosModule,
   ],
 })
 export class AppModule {}
