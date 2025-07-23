@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToOne, OneToMany } from 'typeorm';
 import { TipoEquipo } from '../../tipos-equipos/entities/tipos-equipos.entity';
+import { MovimientoEquipo } from 'src/movimientos_equipos/entities/movimiento-equipo.entity';
 
 @Entity('equipos_prestamo')
 export class EquipoPrestamo {
@@ -24,4 +25,9 @@ export class EquipoPrestamo {
 
   @Column({ length: 20, default: 'activo' })
   estado: string;
+
+  @OneToMany(() => MovimientoEquipo, movimientos => movimientos.id_prestamo)
+  movimientos: MovimientoEquipo[];
+
+  
 }

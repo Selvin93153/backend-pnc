@@ -7,6 +7,7 @@ import { ReportesModule } from './reportes/reportes.module';
 import { TiposEquiposModule } from './tipos-equipos/tipos-equipos.module';
 import { EquiposAsignadosModule } from './equipos_asignados/equipos-asignados.module';
 import { EquiposPrestamoModule } from './equipos_prestamo/equipos-prestamo.module';
+import { MovimientosEquiposModule } from './movimientos_equipos/movimientos-equipos.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { EquiposPrestamoModule } from './equipos_prestamo/equipos-prestamo.modul
     TiposEquiposModule,
     EquiposAsignadosModule,
     EquiposPrestamoModule,
+    MovimientosEquiposModule,
   ],
 })
 export class AppModule {}
