@@ -8,6 +8,7 @@ import { TiposEquiposModule } from './tipos-equipos/tipos-equipos.module';
 import { EquiposAsignadosModule } from './equipos_asignados/equipos-asignados.module';
 import { EquiposPrestamoModule } from './equipos_prestamo/equipos-prestamo.module';
 import { MovimientosEquiposModule } from './movimientos_equipos/movimientos-equipos.module';
+import { VehiculosModule } from './vehiculos/vehiculos.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { MovimientosEquiposModule } from './movimientos_equipos/movimientos-equi
     EquiposAsignadosModule,
     EquiposPrestamoModule,
     MovimientosEquiposModule,
+    VehiculosModule,
   ],
 })
 export class AppModule {}

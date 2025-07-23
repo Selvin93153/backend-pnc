@@ -10,6 +10,7 @@ import { Role } from '../../roles/entities/role.entity';
 import { Reporte } from 'src/reportes/entities/reporte.entity';
 import { EquipoAsignado } from 'src/equipos_asignados/entities/equipos-asignados.entity';
 import { MovimientoEquipo } from 'src/movimientos_equipos/entities/movimiento-equipo.entity';
+import { Vehiculo } from 'src/vehiculos/entities/vehiculos.entity';
 
 @Entity('usuarios')
 export class Usuario {
@@ -46,6 +47,9 @@ reportes: Reporte[];
 
    @OneToMany(() => MovimientoEquipo, recibe => recibe.id_usuario_recibe)
   recibe: MovimientoEquipo[];
+
+   @OneToMany(() => Vehiculo, vehiculos => vehiculos.id_usuario)
+  vehiculos: Vehiculo[];
 
 
 }
