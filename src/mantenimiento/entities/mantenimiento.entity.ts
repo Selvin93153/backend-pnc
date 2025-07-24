@@ -1,5 +1,5 @@
 import { Vehiculo } from "src/vehiculos/entities/vehiculos.entity";
-import { Column, CreateDateColumn, Entity, Generated, JoinColumn, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, Generated, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity ('Mantenimiento')
 export class Mantenimiento{
@@ -22,7 +22,7 @@ fecha_servicio: Date;
   @Column({ type: 'text', nullable: true })
   descripcion: string;
 
-  @ManyToMany (() => Vehiculo , {nullable: false, onDelete: 'CASCADE'})
+  @ManyToOne (() => Vehiculo , {nullable: false, onDelete: 'CASCADE'})
   @JoinColumn ({name: 'id_vehiculo'})
   id_vehiculo: Vehiculo;
 
