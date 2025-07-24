@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToOne, OneToMany } from 'typeorm';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
+import { Control } from 'src/control/entities/control.entity';
 
 @Entity('vehiculos')
 export class Vehiculo {
@@ -24,4 +25,9 @@ export class Vehiculo {
   @ManyToOne(() => Usuario, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'id_usuario' })
   id_usuario: Usuario;
+
+  
+  @OneToMany(() => Control, controles => controles.id_vehiculo,)
+  controles: Control[];
+
 }
