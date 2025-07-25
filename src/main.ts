@@ -1,19 +1,25 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';  // Importa ValidationPipe
+import { ValidationPipe } from '@nestjs/common';
+import * as dotenv from 'dotenv';
 
 async function bootstrap() {
+  dotenv.config();
+
   const app = await NestFactory.create(AppModule);
-  { cors: true } 
 
-  app.setGlobalPrefix('api'); 
+  app.enableCors({
+    origin: process.env.CORS_ORIGIN ?? 'http://localhost:5173',
+    credentials: true,
+  });
 
-  // Aquí activas la validación global
+  app.setGlobalPrefix('api');
+
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,           // Elimina propiedades que no están en el DTO
-      forbidNonWhitelisted: true, // Lanza error si llegan propiedades extras
-      transform: true,           // Transforma payloads a instancias de clases DTO
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
     }),
   );
 
