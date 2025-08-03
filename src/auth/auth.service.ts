@@ -15,7 +15,7 @@ export class AuthService {
   ) {}
 
   async login(correo: string, contraseña: string) {
-    const usuario = await this.usuarioRepo.findOne({ where: { correo } });
+    const usuario = await this.usuarioRepo.findOne({ where: { correo },relations: ['rol'] });
 
     if (!usuario) {
       throw new NotFoundException('Usuario no encontrado');
@@ -34,8 +34,17 @@ export class AuthService {
 
     const token = await this.jwtService.signAsync(payload);
 
+    const usuarioDto = {
+    id_usuario: usuario.id_usuario,
+    nombres: usuario.nombres,
+    apellidos: usuario.apellidos,
+    correo: usuario.correo,
+    rol: usuario.rol?.nombre_rol,
+  };
+
     return {
       access_token: token,
+      usuario: usuarioDto,
     };
   }
 }
