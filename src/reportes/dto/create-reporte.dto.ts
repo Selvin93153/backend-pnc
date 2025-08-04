@@ -10,7 +10,7 @@ export class CreateReporteDto {
   titulo: string;
 
   @IsString()
-  @MaxLength(300)
+  @MaxLength(50000)
   descripcion: string;
 }
 
