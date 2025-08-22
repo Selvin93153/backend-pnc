@@ -18,11 +18,11 @@ export class MovimientoEquipo {
   @JoinColumn({ name: 'id_prestamo' })
   id_prestamo: EquipoPrestamo;
 
-  @ManyToOne(() => Usuario, { nullable: false, onDelete: 'SET NULL' })
+  @ManyToOne(() => Usuario, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'id_usuario_entrega' })
   id_usuario_entrega: Usuario;
 
-  @ManyToOne(() => Usuario, { nullable: false, onDelete: 'SET NULL' })
+  @ManyToOne(() => Usuario, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'id_usuario_recibe' })
   id_usuario_recibe: Usuario;
 
