@@ -11,6 +11,7 @@ export class EquiposPrestamoService {
   constructor(
     @InjectRepository(EquipoPrestamo)
     private prestamoRepo: Repository<EquipoPrestamo>,
+
     @InjectRepository(TipoEquipo)
     private tipoRepo: Repository<TipoEquipo>,
   ) {}
@@ -28,7 +29,10 @@ export class EquiposPrestamoService {
   }
 
   async findOne(id: number): Promise<EquipoPrestamo> {
-    const prestamo = await this.prestamoRepo.findOne({ where: { id_prestamo: id }, relations: ['id_tipo'] });
+    const prestamo = await this.prestamoRepo.findOne({
+      where: { id_prestamo: id },
+      relations: ['id_tipo'],
+    });
     if (!prestamo) throw new NotFoundException('Equipo en préstamo no encontrado');
     return prestamo;
   }
@@ -48,6 +52,16 @@ export class EquiposPrestamoService {
 
   async remove(id: number): Promise<void> {
     const result = await this.prestamoRepo.delete(id);
-    if (result.affected === 0) throw new NotFoundException('Equipo en préstamo no encontrado');
+    if (result.affected === 0)
+      throw new NotFoundException('Equipo en préstamo no encontrado');
   }
+
+ async findByEstado(estado: 'disponible' | 'en uso'): Promise<EquipoPrestamo[]> {
+  return this.prestamoRepo.find({
+    where: { estado },
+    relations: ['id_tipo'], // o agrega más relaciones si necesitas
+  });
 }
+
+}
+

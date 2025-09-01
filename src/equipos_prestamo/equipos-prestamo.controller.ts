@@ -17,6 +17,15 @@ export class EquiposPrestamoController {
     return this.service.findAll();
   }
 
+  @Get('disponibles')
+findDisponibles() {
+  return this.service.findByEstado('disponible');
+}
+
+@Get('en-uso')
+findEnUso() {
+  return this.service.findByEstado('en uso');
+}
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.service.findOne(+id);
@@ -31,4 +40,6 @@ export class EquiposPrestamoController {
   remove(@Param('id') id: string) {
     return this.service.remove(+id);
   }
+
+
 }

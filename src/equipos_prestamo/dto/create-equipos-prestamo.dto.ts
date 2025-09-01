@@ -1,4 +1,4 @@
-import { IsInt, IsString,  MaxLength} from 'class-validator';
+import { IsEnum, IsInt, IsOptional, IsString,  MaxLength} from 'class-validator';
 
 export class CreateEquiposPrestamoDto {
  
@@ -17,6 +17,9 @@ export class CreateEquiposPrestamoDto {
    @IsInt()
   id_tipo: number;
 
-  @IsString()
-  estado?: string;
+   @IsOptional()
+  @IsEnum(['disponible', 'en uso'], {
+    message: 'El estado debe ser "disponible" o "en uso"',
+  })
+  estado?: 'disponible' | 'en uso';
 }

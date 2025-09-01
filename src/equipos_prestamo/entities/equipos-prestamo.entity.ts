@@ -20,8 +20,10 @@ export class EquipoPrestamo {
    @JoinColumn({ name: 'id_tipo' })
   id_tipo: TipoEquipo;
 
-  @Column({ length: 20, default: 'activo' })
-  estado: string;
+  
+@Column({ type: 'varchar', default: 'disponible' })
+estado: 'disponible' | 'en uso';
+
 
   @OneToMany(() => MovimientoEquipo, movimientos => movimientos.id_prestamo)
   movimientos: MovimientoEquipo[];
