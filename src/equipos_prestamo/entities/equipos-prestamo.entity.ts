@@ -7,6 +7,9 @@ export class EquipoPrestamo {
   @PrimaryGeneratedColumn()
   id_prestamo: number;
 
+   @Column({ length: 50, nullable: true })
+  clase: string;
+
   @Column({ length: 50, nullable: true })
   marca: string;
 

@@ -19,11 +19,18 @@ export class EquipoAsignado {
   @Column({ length: 50, unique: true })
   serie: string;
 
+  
+  @Column()
+  id_tipo: number; // FK numérica directa
+
   @ManyToOne(() => TipoEquipo, tipo => tipo.equipos, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'id_tipo' })  
-  id_tipo: TipoEquipo;
+  tipo: TipoEquipo;
+
+  @Column()
+id_usuario: number;
 
   @ManyToOne(() => Usuario, usuario => usuario.equipos, { onDelete: 'SET NULL' })
    @JoinColumn({ name: 'id_usuario' })  
-  id_usuario: Usuario;
+  usuario: Usuario;
 }

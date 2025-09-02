@@ -1,6 +1,7 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsNumber } from 'class-validator';
 
 export class CreateEquipoAsignadoDto {
+
   @IsNotEmpty()
   @IsString()
   clase: string;
@@ -18,8 +19,10 @@ export class CreateEquipoAsignadoDto {
   serie: string;
 
   @IsNotEmpty()
+  @IsNumber()
   id_tipo: number;
 
   @IsNotEmpty()
+  @IsNumber()
   id_usuario: number;
 }

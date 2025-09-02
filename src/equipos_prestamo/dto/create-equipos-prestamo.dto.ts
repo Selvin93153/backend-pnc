@@ -1,6 +1,11 @@
 import { IsEnum, IsInt, IsOptional, IsString,  MaxLength} from 'class-validator';
 
 export class CreateEquiposPrestamoDto {
+
+  
+   @IsString()
+  @MaxLength(50)
+  clase?: string;
  
    @IsString()
   @MaxLength(50)
