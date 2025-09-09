@@ -19,6 +19,11 @@ export class EquipoAsignado {
   @Column({ length: 50, unique: true })
   serie: string;
 
+    
+@Column({ type: 'varchar', default: 'guardado' })
+estado: 'guardado' | 'en uso';
+
+
   
   @Column()
   id_tipo: number; // FK numérica directa

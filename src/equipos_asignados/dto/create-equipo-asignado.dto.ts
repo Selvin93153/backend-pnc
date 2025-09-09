@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsNumber, IsEnum } from 'class-validator';
 
 export class CreateEquipoAsignadoDto {
 
@@ -17,6 +17,12 @@ export class CreateEquipoAsignadoDto {
   @IsNotEmpty()
   @IsString()
   serie: string;
+
+   @IsOptional()
+    @IsEnum(['guardado', 'en uso'], {
+      message: 'El estado debe ser "guardado" o "en uso"',
+    })
+    estado?: 'guardado' | 'en uso';
 
   @IsNotEmpty()
   @IsNumber()
