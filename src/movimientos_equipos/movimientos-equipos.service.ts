@@ -52,29 +52,39 @@ export class MovimientosEquiposService {
   }
 
   async update(id: number, dto: UpdateMovimientoEquipoDto): Promise<MovimientoEquipo> {
-    const movimiento = await this.findOne(id);
+  const movimiento = await this.findOne(id);
 
-    if (dto.id_prestamo) {
-      const prestamo = await this.prestamoRepo.findOneBy({ id_prestamo: dto.id_prestamo });
-      if (!prestamo) throw new NotFoundException('Préstamo no encontrado');
-      movimiento.id_prestamo = prestamo;
-    }
-
-    if (dto.id_usuario_entrega) {
-      const entrega = await this.usuarioRepo.findOneBy({ id_usuario: dto.id_usuario_entrega });
-      if (!entrega) throw new NotFoundException('Usuario de entrega no encontrado');
-      movimiento.id_usuario_entrega = entrega;
-    }
-
-    if (dto.id_usuario_recibe) {
-      const recibe = await this.usuarioRepo.findOneBy({ id_usuario: dto.id_usuario_recibe });
-      if (!recibe) throw new NotFoundException('Usuario receptor no encontrado');
-      movimiento.id_usuario_recibe = recibe;
-    }
-
-    Object.assign(movimiento, dto);
-    return this.movimientoRepo.save(movimiento);
+  if (dto.id_prestamo) {
+    const prestamo = await this.prestamoRepo.findOneBy({ id_prestamo: dto.id_prestamo });
+    if (!prestamo) throw new NotFoundException('Préstamo no encontrado');
+    movimiento.id_prestamo = prestamo;
   }
+
+  if (dto.id_usuario_entrega) {
+    const entrega = await this.usuarioRepo.findOneBy({ id_usuario: dto.id_usuario_entrega });
+    if (!entrega) throw new NotFoundException('Usuario de entrega no encontrado');
+    movimiento.id_usuario_entrega = entrega;
+  }
+
+  if (dto.id_usuario_recibe) {
+    const recibe = await this.usuarioRepo.findOneBy({ id_usuario: dto.id_usuario_recibe });
+    if (!recibe) throw new NotFoundException('Usuario receptor no encontrado');
+    movimiento.id_usuario_recibe = recibe;
+  }
+
+  // Actualizar los campos del movimiento
+  Object.assign(movimiento, dto);
+  const movimientoActualizado = await this.movimientoRepo.save(movimiento);
+
+  // 🔹 Si el estado se cambió a "disponible", actualizar también el préstamo
+  if (dto.estado === 'disponible' && movimiento.id_prestamo) {
+    movimiento.id_prestamo.estado = 'disponible';
+    await this.prestamoRepo.save(movimiento.id_prestamo);
+  }
+
+  return movimientoActualizado;
+}
+
 
   async remove(id: number): Promise<void> {
     const movimiento = await this.findOne(id);
