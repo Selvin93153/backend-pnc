@@ -12,6 +12,7 @@ import { VehiculosModule } from './vehiculos/vehiculos.module';
 import { ControlModule } from './control/control.module';
 import { MantenimientoModule } from './mantenimiento/mantenimiento.module';
 import { AuthModule } from './auth/auth.module';
+import { MovimientosPropioModule } from './movimientos_equipos_propios/movimientos-propio.module';
 
 @Module({
   imports: [
@@ -44,6 +45,8 @@ import { AuthModule } from './auth/auth.module';
     ControlModule,
     MantenimientoModule,
     AuthModule,
+    MovimientosPropioModule,
+
   ],
 })
 export class AppModule {}
