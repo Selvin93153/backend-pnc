@@ -12,6 +12,11 @@ export class ControlController {
     return this.controlService.create(dto);
   }
 
+    @Get('vehiculo/:idVehiculo')
+findByVehiculo(@Param('idVehiculo') idVehiculo: string) {
+  return this.controlService.findByVehiculo(+idVehiculo);
+}
+
   @Get()
   findAll() {
     return this.controlService.findAll();
@@ -31,4 +36,6 @@ export class ControlController {
   remove(@Param('id') id: string) {
     return this.controlService.remove(+id);
   }
+
+
 }

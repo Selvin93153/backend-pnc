@@ -8,6 +8,7 @@ import { Vehiculo } from '../vehiculos/entities/vehiculos.entity';
 
 @Injectable()
 export class ControlService {
+
   constructor(
     @InjectRepository(Control)
     private controlRepo: Repository<Control>,
@@ -65,4 +66,18 @@ export class ControlService {
     const control = await this.findOne(id);
     await this.controlRepo.remove(control);
   }
+
+  //filtrado de controles por vehiculos
+ async findByVehiculo(idVehiculo: number): Promise<Control[]> {
+  const vehiculo = await this.vehiculoRepo.findOneBy({ id_vehiculo: idVehiculo });
+  if (!vehiculo) throw new NotFoundException('Vehículo no encontrado');
+
+  return this.controlRepo
+    .createQueryBuilder('control')
+    .leftJoinAndSelect('control.id_vehiculo', 'vehiculo')
+    .where('vehiculo.id_vehiculo = :idVehiculo', { idVehiculo })
+    .orderBy('control.fecha_control', 'DESC')
+    .getMany();
+}
+
 }
