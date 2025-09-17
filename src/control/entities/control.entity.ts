@@ -20,8 +20,9 @@ export class Control {
   @Column()
   km_salida: number;
 
-  @Column()
-  km_entrada: number;
+  @Column({ nullable: true })
+km_entrada: number;
+
 
   @Column()
   servicio_km: number;

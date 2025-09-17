@@ -1,4 +1,4 @@
-import { IsInt } from 'class-validator';
+import { IsInt, IsOptional } from 'class-validator';
 
 export class CreateControlDto {
   @IsInt()
@@ -7,6 +7,7 @@ export class CreateControlDto {
   @IsInt()
   km_salida: number;
 
+  @IsOptional()
   @IsInt()
   km_entrada: number;
 
