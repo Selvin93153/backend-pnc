@@ -3,6 +3,9 @@ import { ReportesService } from './reportes.service';
 import { CreateReporteDto } from '../reportes/dto/create-reporte.dto';
 import { UpdateReporteDto } from '../reportes/dto/update-reporte.dto';
 import { Reporte } from './entities/reporte.entity';
+import { UseGuards, Req } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+
 
 @Controller('reportes')
 export class ReportesController {
@@ -12,11 +15,13 @@ export class ReportesController {
   create(@Body() createReporteDto: CreateReporteDto): Promise<Reporte> {
     return this.reportesService.create(createReporteDto);
   }
+@UseGuards(JwtAuthGuard)
+@Get()
+findAll(@Req() req): Promise<Reporte[]> {
+  const usuario = req.user; // { userId, correo, rol }
+  return this.reportesService.findAll(usuario);
+}
 
-  @Get()
-  findAll(): Promise<Reporte[]> {
-    return this.reportesService.findAll();
-  }
 
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number): Promise<Reporte> {

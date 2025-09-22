@@ -33,9 +33,22 @@ export class ReportesService {
 }
 
 
-  async findAll(): Promise<Reporte[]> {
+async findAll(usuarioSolicitante: any): Promise<Reporte[]> {
+  const rolesConAccesoTotal = ['armero', 'jefe'];
+
+  if (rolesConAccesoTotal.includes(usuarioSolicitante.rol)) {
+    // armero y jefe ven todos los reportes
     return this.reportesRepository.find({ relations: ['id_usuario'] });
+  } else {
+    // usuarios normales solo ven sus propios reportes
+    return this.reportesRepository.find({
+      where: { id_usuario: usuarioSolicitante.userId },
+      relations: ['id_usuario'],
+    });
   }
+}
+
+
 async findOne(id: number): Promise<Reporte> {
   const reporte = await this.reportesRepository.findOne({
     where: { id_reporte: id },  // 👈 usa el nombre del campo correcto en tu entidad
