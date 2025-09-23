@@ -32,6 +32,12 @@ export class Usuario {
   @Column('text')
   contraseña: string;
 
+    @Column({ type: 'varchar', length: 255, nullable: true })
+  reset_token: string | null;
+
+  @Column({ type: 'timestamp', nullable: true })
+  reset_expires: Date | null;
+
   @ManyToOne(() => Role)
   @JoinColumn({ name: 'id_rol' })
   rol: Role;

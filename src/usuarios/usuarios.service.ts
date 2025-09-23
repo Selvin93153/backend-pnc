@@ -6,6 +6,7 @@ import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { Role } from '../roles/entities/role.entity';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 
 
 @Injectable()
@@ -70,4 +71,49 @@ async update(id_usuario: number, dto: UpdateUsuarioDto): Promise<Usuario> {
     const usuario = await this.findOne(id);
     await this.usuarioRepository.remove(usuario);
   }
+
+
+
+
+async forgotPassword(correo: string): Promise<{ message: string }> {
+    const usuario = await this.usuarioRepository.findOne({ where: { correo } });
+    if (!usuario) throw new NotFoundException('Usuario no encontrado');
+
+    const token = crypto.randomBytes(32).toString('hex');
+    const expires = new Date(Date.now() + 15 * 60 * 1000); // 15 min
+
+    usuario.reset_token = token;
+    usuario.reset_expires = expires;
+
+    await this.usuarioRepository.save(usuario);
+
+    // Aquí puedes enviar correo con el token al usuario
+    console.log(`Token de recuperación para ${correo}: ${token}`);
+
+    return { message: 'Se ha enviado un token de recuperación a tu correo' };
+  }
+
+  // === Resetear contraseña usando token ===
+  async resetPassword(token: string, newPassword: string): Promise<{ message: string }> {
+    const usuario = await this.usuarioRepository.findOne({ where: { reset_token: token } });
+
+    if (!usuario) throw new NotFoundException('Token inválido');
+    if (!usuario.reset_expires || usuario.reset_expires < new Date()) throw new NotFoundException('Token expirado');
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    usuario.contraseña = hashedPassword;
+
+    usuario.reset_token = null;
+    usuario.reset_expires = null;
+
+    await this.usuarioRepository.save(usuario);
+
+    return { message: 'Contraseña cambiada correctamente' };
+  }
+
+
+
+
 }
+
+
