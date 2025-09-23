@@ -13,6 +13,7 @@ import { ControlModule } from './control/control.module';
 import { MantenimientoModule } from './mantenimiento/mantenimiento.module';
 import { AuthModule } from './auth/auth.module';
 import { MovimientosPropioModule } from './movimientos_equipos_propios/movimientos-propio.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -46,6 +47,8 @@ import { MovimientosPropioModule } from './movimientos_equipos_propios/movimient
     MantenimientoModule,
     AuthModule,
     MovimientosPropioModule,
+    MailModule,
+    
 
   ],
 })

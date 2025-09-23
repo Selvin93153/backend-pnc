@@ -7,6 +7,7 @@ import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { Role } from '../roles/entities/role.entity';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
+import { MailService } from '../mail/mail.service'; // importa tu servicio de correo
 
 
 @Injectable()
@@ -17,6 +18,8 @@ export class UsuariosService {
 
     @InjectRepository(Role)
     private roleRepository: Repository<Role>,
+
+    private readonly mailService: MailService, 
   ) {}
 
 async create(dto: CreateUsuarioDto): Promise<Usuario> {
@@ -74,24 +77,40 @@ async update(id_usuario: number, dto: UpdateUsuarioDto): Promise<Usuario> {
 
 
 
-
 async forgotPassword(correo: string): Promise<{ message: string }> {
-    const usuario = await this.usuarioRepository.findOne({ where: { correo } });
-    if (!usuario) throw new NotFoundException('Usuario no encontrado');
+  const usuario = await this.usuarioRepository.findOne({ where: { correo } });
+  if (!usuario) throw new NotFoundException('Usuario no encontrado');
 
-    const token = crypto.randomBytes(32).toString('hex');
-    const expires = new Date(Date.now() + 15 * 60 * 1000); // 15 min
+  const token = crypto.randomBytes(32).toString('hex');
+  const expires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutos
 
-    usuario.reset_token = token;
-    usuario.reset_expires = expires;
+  usuario.reset_token = token;
+  usuario.reset_expires = expires;
 
-    await this.usuarioRepository.save(usuario);
+  await this.usuarioRepository.save(usuario);
 
-    // Aquí puedes enviar correo con el token al usuario
-    console.log(`Token de recuperación para ${correo}: ${token}`);
+  // Construir el link de recuperación
+  const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
 
-    return { message: 'Se ha enviado un token de recuperación a tu correo' };
-  }
+ // reemplaza con tu URL real
+
+  // Enviar correo con el token
+  await this.mailService.sendMail(
+  correo,
+  'Recuperación de contraseña',
+  `
+    <p>Hola ${usuario.nombres},</p>
+    <p>Se ha solicitado restablecer tu contraseña.</p>
+    <p>Haz clic en el siguiente enlace para cambiar tu contraseña (válido 15 minutos):</p>
+    <a href="${resetLink}">${resetLink}</a>
+    <p>Si no solicitaste este cambio, ignora este correo.</p>
+  `
+);
+
+
+  return { message: 'Se ha enviado un correo con instrucciones para recuperar la contraseña' };
+}
+
 
   // === Resetear contraseña usando token ===
   async resetPassword(token: string, newPassword: string): Promise<{ message: string }> {
