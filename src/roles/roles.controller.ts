@@ -1,9 +1,14 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
+import { Roles } from '../common/decorators/roles.decorator'; // importa el decorador
+import { RolesGuard } from '../common/guards/roles.guard';   // importa el guard
+import { AuthGuard } from '@nestjs/passport'; // para usar el passport-jwt
 
 @Controller('roles')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
+ 
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
@@ -13,6 +18,7 @@ export class RolesController {
   }
 
   @Get()
+   @Roles('armero')
   findAll() {
     return this.rolesService.findAll();
   }
