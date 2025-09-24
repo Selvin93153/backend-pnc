@@ -1,9 +1,14 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards } from '@nestjs/common';
 import { EquiposPrestamoService } from './equipos-prestamo.service';
 import { CreateEquiposPrestamoDto } from './dto/create-equipos-prestamo.dto';
 import { UpdateEquiposPrestamoDto } from './dto/update-equipos-prestamo.dto';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
 @Controller('equipos-prestamo')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('armero')
 export class EquiposPrestamoController {
   constructor(private readonly service: EquiposPrestamoService) {}
 

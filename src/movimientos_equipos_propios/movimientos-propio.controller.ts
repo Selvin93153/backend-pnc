@@ -1,9 +1,14 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, UseGuards } from '@nestjs/common';
 import { MovimientosPropiosService } from './movimientos-propio.service';
 import { CreateMovimientoEquipoDto } from './dto/create-movimiento-propio.dto';
 import { UpdateMovimientoEquipoDto } from './dto/update-movimiento-propio.dto';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
 @Controller('movimientos-propios')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('armero')
 export class MovimientosPropiosController {
   constructor(private readonly service: MovimientosPropiosService) {}
 

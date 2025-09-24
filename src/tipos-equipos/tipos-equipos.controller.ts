@@ -1,9 +1,13 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards } from '@nestjs/common';
 import { TiposEquiposService } from './tipos-equipos.service';
 import { CreateTipoEquipoDto } from './dto/create-tipo-equipo.dto';
 import { UpdateTipoEquipoDto } from './dto/update-tipo-equipo.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
 @Controller('tipos-equipos')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class TiposEquiposController {
   constructor(private readonly tiposEquiposService: TiposEquiposService) {}
 
@@ -13,6 +17,7 @@ export class TiposEquiposController {
   }
 
   @Get()
+  @Roles('armero', 'jefe')
   findAll() {
     return this.tiposEquiposService.findAll();
   }

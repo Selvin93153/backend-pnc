@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, UseGuards } from '@nestjs/common';
 import { MantenimientoService } from './mantenimiento.service';
 import { CreateMantenimientoDto } from './dto/create-mantenimiento.dto';
 import { UpdateMantenimientoDto } from './dto/update-mantenimiento.dto';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('mantenimiento')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class MantenimientoController {
   constructor(private readonly mantenimientoService: MantenimientoService) {}
 

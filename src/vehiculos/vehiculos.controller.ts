@@ -1,13 +1,20 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards } from '@nestjs/common';
 import { VehiculosService } from './vehiculos.service';
 import { CreateVehiculoDto } from './dto/create-vehiculo.dto';
 import { UpdateVehiculoDto } from './dto/update-vehiculo.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Public } from 'src/common/decorators/public.decorator';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
 @Controller('vehiculos')
+@UseGuards(JwtAuthGuard, RolesGuard)
+
 export class VehiculosController {
   constructor(private readonly vehiculosService: VehiculosService) {}
 
   @Post()
+   @Roles( 'jefe')
   create(@Body() dto: CreateVehiculoDto) {
     return this.vehiculosService.create(dto);
   }

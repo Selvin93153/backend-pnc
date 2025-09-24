@@ -5,9 +5,11 @@ import { UpdateReporteDto } from '../reportes/dto/update-reporte.dto';
 import { Reporte } from './entities/reporte.entity';
 import { UseGuards, Req } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 
 
 @Controller('reportes')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class ReportesController {
   constructor(private readonly reportesService: ReportesService) {}
 

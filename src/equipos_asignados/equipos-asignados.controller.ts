@@ -14,8 +14,11 @@ import { EquiposAsignadosService } from './equipos-asignados.service';
 import { CreateEquipoAsignadoDto } from './dto/create-equipo-asignado.dto';
 import { UpdateEquipoAsignadoDto } from './dto/update-equipo-asignado.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
 @Controller('equipos-asignados')
+
 export class EquiposAsignadosController {
   constructor(private readonly service: EquiposAsignadosService) {}
 

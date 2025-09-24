@@ -5,10 +5,11 @@ import { UpdateRoleDto } from './dto/update-role.dto';
 import { Roles } from '../common/decorators/roles.decorator'; // importa el decorador
 import { RolesGuard } from '../common/guards/roles.guard';   // importa el guard
 import { AuthGuard } from '@nestjs/passport'; // para usar el passport-jwt
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('roles')
-@UseGuards(AuthGuard('jwt'), RolesGuard)
- 
+@UseGuards(JwtAuthGuard, RolesGuard)
+ @Roles('jefe')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
@@ -18,7 +19,6 @@ export class RolesController {
   }
 
   @Get()
-   @Roles('armero')
   findAll() {
     return this.rolesService.findAll();
   }
