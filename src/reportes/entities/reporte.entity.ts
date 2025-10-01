@@ -16,6 +16,9 @@ id_usuario: Usuario;
 
   @Column({ type: 'text', nullable: true })
   descripcion: string;
+  
+  @Column({ default: false })
+  visto: boolean;
 
   @CreateDateColumn()
   fecha_creacion: Date;

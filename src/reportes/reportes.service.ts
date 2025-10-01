@@ -70,4 +70,31 @@ async findOne(id: number): Promise<Reporte> {
     const result = await this.reportesRepository.delete(id);
     if (result.affected === 0) throw new NotFoundException(`Reporte con id ${id} no encontrado`);
   }
+
+  async marcarVisto(id: number): Promise<Reporte> {
+  const reporte = await this.findOne(id);
+  if (!reporte.visto) {
+    reporte.visto = true;
+    return this.reportesRepository.save(reporte);
+  }
+  return reporte; // si ya estaba visto, devuelve igual
+}
+
+// Todos los reportes NO vistos
+async findAllNoVistos(): Promise<Reporte[]> {
+  return this.reportesRepository.find({
+    where: { visto: false },
+    order: { fecha_creacion: 'DESC' },
+    relations: ['id_usuario'],
+  });
+}
+
+// Todos los reportes VISTOS
+async findAllVistos(): Promise<Reporte[]> {
+  return this.reportesRepository.find({
+    where: { visto: true },
+    order: { fecha_creacion: 'DESC' },
+    relations: ['id_usuario'],
+  });
+}
 }
