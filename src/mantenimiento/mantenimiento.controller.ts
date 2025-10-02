@@ -4,6 +4,7 @@ import { CreateMantenimientoDto } from './dto/create-mantenimiento.dto';
 import { UpdateMantenimientoDto } from './dto/update-mantenimiento.dto';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
 @Controller('mantenimiento')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -26,6 +27,7 @@ export class MantenimientoController {
   }
 
   @Put(':id')
+  @Roles('agente operativo')
   update(@Param('id') id: string, @Body() dto: UpdateMantenimientoDto) {
     return this.mantenimientoService.update(+id, dto);
   }

@@ -46,7 +46,7 @@ async findAllVistos(): Promise<Reporte[]> {
  
 
   @Patch(':id/visto')
-   @Roles('armero', 'jefe')
+   @Roles('armero')
 async marcarVisto(@Param('id', ParseIntPipe) id: number): Promise<Reporte> {
   return this.reportesService.marcarVisto(id);
 }

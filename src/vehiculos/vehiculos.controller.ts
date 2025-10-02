@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards, Req } from '@nestjs/common';
 import { VehiculosService } from './vehiculos.service';
 import { CreateVehiculoDto } from './dto/create-vehiculo.dto';
 import { UpdateVehiculoDto } from './dto/update-vehiculo.dto';
@@ -20,8 +20,15 @@ export class VehiculosController {
   }
 
   @Get()
+  
   findAll() {
     return this.vehiculosService.findAll();
+  }
+
+ @Get('mis-vehiculos')
+  async findMyVehiculos(@Req() req) {
+    const userId = req.user.userId; // viene del JWT
+    return await this.vehiculosService.findByUser(userId);
   }
 
   @Get(':id')
@@ -30,6 +37,7 @@ export class VehiculosController {
   }
 
   @Put(':id')
+  @Roles( 'jefe')
   update(@Param('id') id: string, @Body() dto: UpdateVehiculoDto) {
     return this.vehiculosService.update(+id, dto);
   }

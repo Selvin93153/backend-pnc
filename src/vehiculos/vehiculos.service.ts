@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Vehiculo } from './entities/vehiculos.entity';
@@ -65,4 +65,22 @@ async create(dto: CreateVehiculoDto): Promise<Vehiculo> {
     const vehiculo = await this.findOne(id);
     await this.vehiculoRepo.remove(vehiculo);
   }
+async findByUser(userId: number): Promise<Vehiculo[]> {
+    if (!userId) {
+      throw new UnauthorizedException('Usuario no identificado');
+    }
+
+    // QueryBuilder seguro para relaciones
+    const vehiculos = await this.vehiculoRepo
+      .createQueryBuilder('vehiculo')
+      .leftJoinAndSelect('vehiculo.id_usuario', 'usuario')
+      .where('usuario.id_usuario = :id', { id: userId })
+      .getMany();
+
+    return vehiculos;
+  }
 }
+
+
+
+
