@@ -86,6 +86,20 @@ export class EquiposAsignadosService {
       relations: ['tipo', 'usuario'],
     });
   }
+
+  async findByNip(nip: string): Promise<EquipoAsignado[]> {
+  // Buscar el usuario por NIP
+  const usuario = await this.usuarioRepo.findOne({ where: { nip } });
+  if (!usuario) {
+    throw new NotFoundException(`Usuario con NIP ${nip} no encontrado`);
+  }
+
+  // Buscar los equipos asignados a ese usuario
+  return this.equipoRepo.find({
+    where: { id_usuario: usuario.id_usuario },
+    relations: ['tipo', 'usuario'],
+  });
+}
 }
 
 

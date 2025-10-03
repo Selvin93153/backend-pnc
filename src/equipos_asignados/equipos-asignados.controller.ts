@@ -30,6 +30,12 @@ export class EquiposAsignadosController {
     return this.service.findByUsuario(userId);
   }
 
+   // Ruta para buscar por NIP 
+  @Get('por-nip/:nip')
+  async findByNip(@Param('nip') nip: string) {
+    return this.service.findByNip(nip);
+  }
+
   @Post()
   create(@Body() dto: CreateEquipoAsignadoDto) {
     return this.service.create(dto);

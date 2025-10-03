@@ -12,6 +12,7 @@ export class TiposEquiposController {
   constructor(private readonly tiposEquiposService: TiposEquiposService) {}
 
   @Post()
+   @Roles('armero')
   create(@Body() dto: CreateTipoEquipoDto) {
     return this.tiposEquiposService.create(dto);
   }
@@ -28,6 +29,7 @@ export class TiposEquiposController {
   }
 
   @Put(':id')
+   @Roles('armero')
   update(@Param('id') id: string, @Body() dto: UpdateTipoEquipoDto) {
     return this.tiposEquiposService.update(+id, dto);
   }

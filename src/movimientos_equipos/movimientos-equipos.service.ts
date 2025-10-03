@@ -90,4 +90,19 @@ export class MovimientosEquiposService {
     const movimiento = await this.findOne(id);
     await this.movimientoRepo.remove(movimiento);
   }
+
+  async findByNipRecibe(nip: string): Promise<MovimientoEquipo[]> {
+  const movimientos = await this.movimientoRepo.find({
+    where: { id_usuario_recibe: { nip } },
+    relations: ['id_prestamo', 'id_usuario_entrega', 'id_usuario_recibe'],
+  });
+
+  if (!movimientos.length) {
+    
+    return [];
+  }
+
+  return movimientos;
+}
+
 }

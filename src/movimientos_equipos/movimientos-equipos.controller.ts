@@ -22,6 +22,13 @@ export class MovimientosEquiposController {
     return this.service.findAll();
   }
 
+  // Filtrar datos po nip
+@Get('por-nip/:nip')
+async findByNip(@Param('nip') nip: string) {
+  return this.service.findByNipRecibe(nip);
+}
+
+
   @Get(':id')
   findOne(@Param('id') id: number) {
     return this.service.findOne(+id);
