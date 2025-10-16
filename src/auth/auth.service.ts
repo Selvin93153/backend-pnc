@@ -47,4 +47,21 @@ export class AuthService {
       usuario: usuarioDto,
     };
   }
+
+
+  async changePassword(userId: number, currentPassword: string, newPassword: string) {
+  const usuario = await this.usuarioRepo.findOne({ where: { id_usuario: userId } });
+  if (!usuario) throw new NotFoundException('Usuario no encontrado');
+
+  const isMatch = await bcrypt.compare(currentPassword, usuario.contraseña);
+  if (!isMatch) throw new UnauthorizedException('Contraseña actual incorrecta');
+
+  usuario.contraseña = await bcrypt.hash(newPassword, 10);
+  await this.usuarioRepo.save(usuario);
+
+  return { message: 'Contraseña cambiada correctamente' };
 }
+
+}
+
+
