@@ -105,4 +105,27 @@ export class MovimientosEquiposService {
   return movimientos;
 }
 
+
+async findPrestamosEnUsoPorUsuario(id_usuario: number) {
+  // Buscamos los movimientos donde el usuario recibe el equipo y el estado es "en uso"
+  const movimientos = await this.movimientoRepo.find({
+    where: { 
+      id_usuario_recibe: { id_usuario },
+      estado: 'en uso',
+    },
+    relations: ['id_prestamo'],
+  });
+
+  // Retornamos solo los campos del préstamo
+  return movimientos.map(mov => ({
+    id_prestamo: mov.id_prestamo.id_prestamo,
+    clase: mov.id_prestamo.clase,
+    marca: mov.id_prestamo.marca,
+    calibre: mov.id_prestamo.calibre,
+    serie: mov.id_prestamo.serie,
+    estado: mov.id_prestamo.estado,
+  }));
 }
+}
+
+

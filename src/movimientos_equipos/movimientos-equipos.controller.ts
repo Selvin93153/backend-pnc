@@ -28,6 +28,11 @@ async findByNip(@Param('nip') nip: string) {
   return this.service.findByNipRecibe(nip);
 }
 
+@Get('prestamos-en-uso/:id_usuario')
+async getPrestamosEnUso(@Param('id_usuario') id_usuario: number) {
+  return this.service.findPrestamosEnUsoPorUsuario(+id_usuario);
+}
+
 
   @Get(':id')
   findOne(@Param('id') id: number) {
