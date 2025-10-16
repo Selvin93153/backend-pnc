@@ -31,6 +31,12 @@ findDisponibles() {
 findEnUso() {
   return this.service.findByEstado('en uso');
 }
+
+@Get('tipo/:id_tipo')
+findByTipo(@Param('id_tipo') id_tipo: string) {
+  return this.service.findByTipo(+id_tipo);
+}
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.service.findOne(+id);

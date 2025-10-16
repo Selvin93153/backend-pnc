@@ -63,5 +63,15 @@ export class EquiposPrestamoService {
   });
 }
 
+async findByTipo(id_tipo: number): Promise<EquipoPrestamo[]> {
+  return this.prestamoRepo
+    .createQueryBuilder('equipo')
+    .leftJoinAndSelect('equipo.id_tipo', 'tipo')
+    .where('tipo.id_tipo = :id_tipo', { id_tipo })
+    .getMany();
+}
+
+
+
 }
 
