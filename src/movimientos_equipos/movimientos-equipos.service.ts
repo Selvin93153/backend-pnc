@@ -117,7 +117,7 @@ async findPrestamosEnUsoPorUsuario(id_usuario: number) {
   });
 
   // Retornamos solo los campos del préstamo
-  return movimientos.map(mov => ({
+  const prestamos = movimientos.map(mov => ({
     id_prestamo: mov.id_prestamo.id_prestamo,
     clase: mov.id_prestamo.clase,
     marca: mov.id_prestamo.marca,
@@ -125,6 +125,11 @@ async findPrestamosEnUsoPorUsuario(id_usuario: number) {
     serie: mov.id_prestamo.serie,
     estado: mov.id_prestamo.estado,
   }));
+
+  return {
+    total: prestamos.length,
+    prestamos,
+  };
 }
 }
 

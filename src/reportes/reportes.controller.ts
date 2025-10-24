@@ -25,6 +25,14 @@ findAll(@Req() req): Promise<Reporte[]> {
   return this.reportesService.findAll(usuario);
 }
 
+@Get('total')
+async getTotal(@Req() req) {
+  const usuario = req.user;
+  const resultado = await this.reportesService.getTotal(usuario);
+  return resultado; // { total: 4 }
+}
+
+
  @Get('nuevos')
   @Roles('armero', 'jefe')
 async findAllNoVistos(): Promise<Reporte[]> {

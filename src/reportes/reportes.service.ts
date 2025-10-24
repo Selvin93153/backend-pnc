@@ -97,4 +97,23 @@ async findAllVistos(): Promise<Reporte[]> {
     relations: ['id_usuario'],
   });
 }
+
+async getTotal(usuarioSolicitante: any): Promise<{ total: number }> {
+  const rolesConAccesoTotal = ['armero', 'jefe'];
+  let total: number;
+
+  if (rolesConAccesoTotal.includes(usuarioSolicitante.rol)) {
+    // armero y jefe ven todos los reportes
+    total = await this.reportesRepository.count();
+  } else {
+    // usuarios normales solo cuentan sus propios reportes
+    total = await this.reportesRepository.count({
+      where: { id_usuario: usuarioSolicitante.userId },
+    });
+  }
+
+  return { total };
+}
+
+
 }

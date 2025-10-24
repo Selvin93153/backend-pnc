@@ -22,13 +22,17 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 export class EquiposAsignadosController {
   constructor(private readonly service: EquiposAsignadosService) {}
 
-    @Get('mis-equipos')
-  @UseGuards(JwtAuthGuard)
-  async findMisEquipos(@Request() req) {
-    // si en tu JwtStrategy ya devuelves number:
-    const userId: number = req.user.userId; // ← viene del token (payload.sub)
-    return this.service.findByUsuario(userId);
-  }
+  @Get('mis-equipos')
+@UseGuards(JwtAuthGuard)
+async findMisEquipos(@Request() req) {
+  const userId: number = req.user.userId;
+  const equipos = await this.service.findByUsuario(userId);
+  return {
+    total: equipos.length,
+    equipos,
+  };
+}
+
 
    // Ruta para buscar por NIP 
   @Get('por-nip/:nip')
