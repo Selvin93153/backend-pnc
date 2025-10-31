@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Usuario } from './entities/usuario.entity';
@@ -36,10 +36,17 @@ async create(dto: CreateUsuarioDto): Promise<Usuario> {
     contraseña: hashedPassword,
     rol,
   });
-
-  return this.usuarioRepository.save(usuario);
-}
-
+ try {
+  return await this.usuarioRepository.save(usuario);
+} catch (error: any) {
+  if (error.code === '23505') {
+    if (error.detail.includes('correo'))
+      throw new ConflictException('El correo ya existe, no puedes usarlo');
+    if (error.detail.includes('nip'))
+      throw new ConflictException('El NIP ya existe, no puedes usarlo');
+  }
+  throw error;
+}}
   findAll(): Promise<Usuario[]> {
     return this.usuarioRepository.find({ relations: ['rol'] });
   }
