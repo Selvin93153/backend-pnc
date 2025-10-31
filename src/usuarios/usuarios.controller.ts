@@ -31,6 +31,13 @@ export class UsuariosController {
     return this.usuariosService.create(dto);
   }
 
+   //  Ruta pública (registro desde login)
+  @Post('register')
+  @Public()
+  createPublic(@Body() dto: CreateUsuarioDto) {
+    return this.usuariosService.create(dto);
+  }
+
   @Get()
   @Roles('jefe','armero')
   findAll() {

@@ -138,7 +138,32 @@ async forgotPassword(correo: string): Promise<{ message: string }> {
   }
 
 
+//registrar un usuario del login publicamente
+async createPublic(dto: CreateUsuarioDto): Promise<Usuario> {
+  const rol = await this.roleRepository.findOneBy({ id_rol: dto.id_rol });
+  if (!rol) {
+    throw new NotFoundException('Rol no encontrado');
+  }
 
+  const saltOrRounds = 10;
+  const hashedPassword = await bcrypt.hash(dto.contraseña, saltOrRounds);
+
+  const usuario = this.usuarioRepository.create({
+    ...dto,
+    contraseña: hashedPassword,
+    rol,
+  });
+ try {
+  return await this.usuarioRepository.save(usuario);
+} catch (error: any) {
+  if (error.code === '23505') {
+    if (error.detail.includes('correo'))
+      throw new ConflictException('El correo ya existe, no puedes usarlo');
+    if (error.detail.includes('nip'))
+      throw new ConflictException('El NIP ya existe, no puedes usarlo');
+  }
+  throw error;
+}}
 
 }
 
