@@ -32,6 +32,9 @@ import { MailModule } from './mail/mail.module';
         database: configService.get('POSTGRES_DB'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: true, // Solo para desarrollo
+         ssl: {
+      rejectUnauthorized: false, // 🔑 Render lo necesita
+    },
       }),
     }),
 
