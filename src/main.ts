@@ -6,12 +6,16 @@ import * as dotenv from 'dotenv';
 async function bootstrap() {
   dotenv.config();
 
-  // Aseguramos que la variable de entorno exista
+  // Validamos que FRONTEND_URL exista
   if (!process.env.FRONTEND_URL) {
     throw new Error('La variable de entorno FRONTEND_URL no está definida');
   }
 
-  const allowedOrigins = process.env.FRONTEND_URL.split(',');
+  // Permitimos múltiples orígenes (producción + desarrollo)
+  const allowedOrigins = [
+    ...process.env.FRONTEND_URL.split(','),
+    ...(process.env.FRONTEND_URL_DEV ? process.env.FRONTEND_URL_DEV.split(',') : []),
+  ];
 
   const app = await NestFactory.create(AppModule);
 
@@ -23,6 +27,7 @@ async function bootstrap() {
       if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.warn(`❌ Bloqueado por CORS: ${origin}`);
         callback(new Error('Not allowed by CORS'));
       }
     },
@@ -39,10 +44,11 @@ async function bootstrap() {
     }),
   );
 
-  // Usamos el puerto que Render asigne o 3000 por defecto para local
+  // Usa el puerto asignado por Render o 3000 localmente
   const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
   await app.listen(port);
 
-  console.log(`Servidor corriendo en puerto ${port}`);
+  console.log(` Servidor corriendo en puerto ${port}`);
+  console.log(` Orígenes permitidos:`, allowedOrigins);
 }
 bootstrap();
