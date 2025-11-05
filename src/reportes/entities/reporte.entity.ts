@@ -20,6 +20,7 @@ id_usuario: Usuario;
   @Column({ default: false })
   visto: boolean;
 
-  @CreateDateColumn()
-  fecha_creacion: Date;
+ @Column({ type: 'timestamp' })
+fecha_creacion: Date;
+
 }

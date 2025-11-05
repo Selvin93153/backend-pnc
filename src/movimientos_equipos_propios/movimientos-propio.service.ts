@@ -19,24 +19,42 @@ export class MovimientosPropiosService {
   ) {}
 
   async create(dto: CreateMovimientoEquipoDto): Promise<MovimientoPropio> {
-    
-    const asignados = await this.prestamoRepo.findOneBy({ id_asignacion: dto.id_asignacion });
-    const entrega = await this.usuarioRepo.findOneBy({ id_usuario: dto.id_usuario_entrega });
-    const recibe = await this.usuarioRepo.findOneBy({ id_usuario: dto.id_usuario_recibe });
+  const asignados = await this.prestamoRepo.findOneBy({ id_asignacion: dto.id_asignacion });
+  const entrega = await this.usuarioRepo.findOneBy({ id_usuario: dto.id_usuario_entrega });
+  const recibe = await this.usuarioRepo.findOneBy({ id_usuario: dto.id_usuario_recibe });
 
-    if (!asignados || !entrega || !recibe) throw new NotFoundException('Datos no encontrados');
-
-    const movimiento = this.movimientoRepo.create({
-      ...dto,
-      id_asignacion: asignados,
-      id_usuario_entrega: entrega,
-      id_usuario_recibe: recibe,
-      fecha_entrega: new Date().toISOString().slice(0, 10), // YYYY-MM-DD
-    hora_entrega: new Date().toTimeString().slice(0, 5), 
-    });
-
-    return this.movimientoRepo.save(movimiento);
+  if (!asignados || !entrega || !recibe) {
+    throw new NotFoundException('Datos no encontrados');
   }
+
+  // Obtener fecha y hora local de Guatemala
+  const ahora = new Date();
+
+  const fechaLocal = ahora
+    .toLocaleDateString('es-GT', { timeZone: 'America/Guatemala' })
+    .split('/')
+    .reverse()
+    .join('-'); // Convierte DD/MM/YYYY → YYYY-MM-DD
+
+  const horaLocal = ahora.toLocaleTimeString('es-GT', {
+    hour12: false,
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    timeZone: 'America/Guatemala',
+  });
+
+  const movimiento = this.movimientoRepo.create({
+    ...dto,
+    id_asignacion: asignados,
+    id_usuario_entrega: entrega,
+    id_usuario_recibe: recibe,
+    fecha_entrega: fechaLocal, // Fecha local correcta
+    hora_entrega: horaLocal,   // Hora local correcta
+  });
+
+  return this.movimientoRepo.save(movimiento);
+}
 
   findAll(): Promise<MovimientoPropio[]> {
     return this.movimientoRepo.find({ relations: ['id_asignacion', 'id_usuario_entrega', 'id_usuario_recibe'] });
@@ -51,7 +69,7 @@ export class MovimientosPropiosService {
     return movimiento;
   }
 
-  async update(id: number, dto: UpdateMovimientoEquipoDto): Promise<MovimientoPropio> {
+ async update(id: number, dto: UpdateMovimientoEquipoDto): Promise<MovimientoPropio> {
   const movimiento = await this.findOne(id);
 
   if (dto.id_asignacion) {
@@ -72,11 +90,34 @@ export class MovimientosPropiosService {
     movimiento.id_usuario_recibe = recibe;
   }
 
-  // Actualizar los campos del movimiento
+  // Actualizar los campos del movimiento con los datos del dto
   Object.assign(movimiento, dto);
+
+  // ✅ Ajustar zona horaria de Guatemala si viene fecha_devolucion o hora_devolucion
+  if ('fecha_devolucion' in dto || 'hora_devolucion' in dto) {
+    const ahora = new Date();
+
+    const fechaLocal = ahora
+      .toLocaleDateString('es-GT', { timeZone: 'America/Guatemala' })
+      .split('/')
+      .reverse()
+      .join('-'); // DD/MM/YYYY -> YYYY-MM-DD
+
+    const horaLocal = ahora.toLocaleTimeString('es-GT', {
+      hour12: false,
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZone: 'America/Guatemala',
+    });
+
+    movimiento.fecha_devolucion = fechaLocal;
+    movimiento.hora_devolucion = horaLocal;
+  }
+
   const movimientoActualizado = await this.movimientoRepo.save(movimiento);
 
-  // 🔹 Si el estado se cambió a "disponible", actualizar también el préstamo
+  // 🔹 Si el estado se cambió a "guardado", actualizar también el préstamo
   if (dto.estado === 'guardado' && movimiento.id_asignacion) {
     movimiento.id_asignacion.estado = 'guardado';
     await this.prestamoRepo.save(movimiento.id_asignacion);
@@ -84,6 +125,7 @@ export class MovimientosPropiosService {
 
   return movimientoActualizado;
 }
+
 
 
   async remove(id: number): Promise<void> {

@@ -16,17 +16,38 @@ export class ReportesService {
     private readonly usuariosRepository: Repository<Usuario>,
   ) {}
 
- async create(createReporteDto: CreateReporteDto): Promise<Reporte> {
+async create(createReporteDto: CreateReporteDto): Promise<Reporte> {
   const usuario = await this.usuariosRepository.findOne({
     where: { id_usuario: createReporteDto.id_usuario },
   });
 
   if (!usuario) throw new NotFoundException('Usuario no encontrado');
 
+  // ✅ Obtener fecha y hora local de Guatemala con Intl.DateTimeFormat
+  const ahora = new Date();
+
+  const formato = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Guatemala',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  });
+
+  const partes = formato.formatToParts(ahora);
+  const fecha = `${partes.find(p => p.type === 'year')?.value}-${partes.find(p => p.type === 'month')?.value}-${partes.find(p => p.type === 'day')?.value}`;
+  const hora = `${partes.find(p => p.type === 'hour')?.value}:${partes.find(p => p.type === 'minute')?.value}:${partes.find(p => p.type === 'second')?.value}`;
+
+  const fechaHoraLocal = new Date(`${fecha}T${hora}`);
+
   const reporte = this.reportesRepository.create({
     titulo: createReporteDto.titulo,
     descripcion: createReporteDto.descripcion,
     id_usuario: usuario,
+    fecha_creacion: fechaHoraLocal, // ✅ fecha correcta de Guatemala
   });
 
   return this.reportesRepository.save(reporte);

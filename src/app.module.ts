@@ -33,7 +33,7 @@ import { MailModule } from './mail/mail.module';
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: true, // Solo para desarrollo
               ssl: {
-      rejectUnauthorized: false, // 🔑 Render lo necesita
+      rejectUnauthorized: false, // Render lo necesita
     },
       }),
     }),

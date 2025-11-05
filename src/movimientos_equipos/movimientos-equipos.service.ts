@@ -69,7 +69,7 @@ async create(dto: CreateMovimientoEquipoDto): Promise<MovimientoEquipo> {
     return movimiento;
   }
 
-  async update(id: number, dto: UpdateMovimientoEquipoDto): Promise<MovimientoEquipo> {
+ async update(id: number, dto: UpdateMovimientoEquipoDto): Promise<MovimientoEquipo> {
   const movimiento = await this.findOne(id);
 
   if (dto.id_prestamo) {
@@ -90,8 +90,32 @@ async create(dto: CreateMovimientoEquipoDto): Promise<MovimientoEquipo> {
     movimiento.id_usuario_recibe = recibe;
   }
 
-  // Actualizar los campos del movimiento
+  // Actualizar los campos del movimiento con lo que venga en el dto
   Object.assign(movimiento, dto);
+
+  // Si el dto indica que se debe registrar la devolución (si vino fecha_devolucion o hora_devolucion),
+  // calcular y asignar la fecha y hora locales de Guatemala correctamente.
+  if ('fecha_devolucion' in dto || 'hora_devolucion' in dto) {
+    const ahora = new Date();
+
+    const fechaLocal = ahora
+      .toLocaleDateString('es-GT', { timeZone: 'America/Guatemala' })
+      .split('/')
+      .reverse()
+      .join('-'); // DD/MM/YYYY -> YYYY-MM-DD
+
+    const horaLocal = ahora.toLocaleTimeString('es-GT', {
+      hour12: false,
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZone: 'America/Guatemala',
+    });
+
+    movimiento.fecha_devolucion = fechaLocal;
+    movimiento.hora_devolucion = horaLocal;
+  }
+
   const movimientoActualizado = await this.movimientoRepo.save(movimiento);
 
   // 🔹 Si el estado se cambió a "disponible", actualizar también el préstamo
@@ -102,6 +126,8 @@ async create(dto: CreateMovimientoEquipoDto): Promise<MovimientoEquipo> {
 
   return movimientoActualizado;
 }
+
+
 
 
   async remove(id: number): Promise<void> {
