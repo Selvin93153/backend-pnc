@@ -18,25 +18,43 @@ export class MovimientosEquiposService {
     private readonly usuarioRepo: Repository<Usuario>,
   ) {}
 
-  async create(dto: CreateMovimientoEquipoDto): Promise<MovimientoEquipo> {
-    
-    const prestamo = await this.prestamoRepo.findOneBy({ id_prestamo: dto.id_prestamo });
-    const entrega = await this.usuarioRepo.findOneBy({ id_usuario: dto.id_usuario_entrega });
-    const recibe = await this.usuarioRepo.findOneBy({ id_usuario: dto.id_usuario_recibe });
+async create(dto: CreateMovimientoEquipoDto): Promise<MovimientoEquipo> {
+  const prestamo = await this.prestamoRepo.findOneBy({ id_prestamo: dto.id_prestamo });
+  const entrega = await this.usuarioRepo.findOneBy({ id_usuario: dto.id_usuario_entrega });
+  const recibe = await this.usuarioRepo.findOneBy({ id_usuario: dto.id_usuario_recibe });
 
-    if (!prestamo || !entrega || !recibe) throw new NotFoundException('Datos no encontrados');
-
-    const movimiento = this.movimientoRepo.create({
-      ...dto,
-      id_prestamo: prestamo,
-      id_usuario_entrega: entrega,
-      id_usuario_recibe: recibe,
-      fecha_entrega: new Date().toISOString().slice(0, 10), // YYYY-MM-DD
-    hora_entrega: new Date().toTimeString().slice(0, 5), 
-    });
-
-    return this.movimientoRepo.save(movimiento);
+  if (!prestamo || !entrega || !recibe) {
+    throw new NotFoundException('Datos no encontrados');
   }
+
+  // Obtener fecha y hora local de Guatemala
+  const ahora = new Date();
+
+  const fechaLocal = ahora
+    .toLocaleDateString('es-GT', { timeZone: 'America/Guatemala' })
+    .split('/')
+    .reverse()
+    .join('-'); // convierte DD/MM/YYYY → YYYY-MM-DD
+
+  const horaLocal = ahora.toLocaleTimeString('es-GT', {
+    hour12: false,
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    timeZone: 'America/Guatemala',
+  });
+
+  const movimiento = this.movimientoRepo.create({
+    ...dto,
+    id_prestamo: prestamo,
+    id_usuario_entrega: entrega,
+    id_usuario_recibe: recibe,
+    fecha_entrega: fechaLocal, //  Fecha local correcta
+    hora_entrega: horaLocal,   // Hora local correcta
+  });
+
+  return this.movimientoRepo.save(movimiento);
+}
 
   findAll(): Promise<MovimientoEquipo[]> {
     return this.movimientoRepo.find({ relations: ['id_prestamo', 'id_usuario_entrega', 'id_usuario_recibe'] });
