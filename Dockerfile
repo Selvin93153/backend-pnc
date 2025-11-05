@@ -27,6 +27,9 @@ FROM node:20-alpine
 # Crear directorio de trabajo
 WORKDIR /app
 
+#  Configurar zona horaria local de Guatemala
+ENV TZ=America/Guatemala
+
 # Copiar solo lo necesario desde la etapa anterior
 COPY --from=builder /app/dist ./dist
 COPY package*.json ./
